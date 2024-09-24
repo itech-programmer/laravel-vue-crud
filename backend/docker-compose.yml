@@ -1,0 +1,38 @@
+services:
+    backend-app:
+        container_name: backend-app
+        build:
+            context: .
+            dockerfile: docker/Dockerfile
+        volumes:
+            - .:/var/www/backend
+        networks:
+            - app-network
+
+    db:
+        image: postgres:15
+        environment:
+            POSTGRES_USER: laravel
+            POSTGRES_PASSWORD: password
+            POSTGRES_DB: laravel_vue_crud
+        volumes:
+            - db_data:/var/lib/postgresql/data
+        networks:
+            - app-network
+
+    nginx:
+        image: nginx:alpine
+        volumes:
+            - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+            - .:/var/www/backend
+        ports:
+            - "8000:80"  # Прокси для доступа к Laravel через 8000 порт
+        networks:
+            - app-network
+
+networks:
+    app-network:
+        driver: bridge
+
+volumes:
+    db_data:

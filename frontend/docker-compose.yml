@@ -1,0 +1,14 @@
+services:
+    frontend-app:
+        container_name: frontend-app
+        build:
+            context: .
+            dockerfile: docker/Dockerfile
+        ports:
+            - "3000:80"  # Прокси для доступа к Vue через 3000 порт
+        networks:
+            - app-network
+
+networks:
+    app-network:
+        driver: bridge
